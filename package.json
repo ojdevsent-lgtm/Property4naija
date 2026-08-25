@@ -9,10 +9,11 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "firebase": "latest",
+    "lucide-react": "latest",
     "next": "latest",
     "react": "latest",
-    "react-dom": "latest",
-    "lucide-react": "latest"
+    "react-dom": "latest"
   },
   "devDependencies": {
     "@types/node": "latest",

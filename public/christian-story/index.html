@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+<title>The Narrow Way — Property4Naija Story Game</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#07110d;color:#fff;font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif}canvas{display:block;width:100%;height:100%;touch-action:none}.hud{position:fixed;inset:0;pointer-events:none}.brand{position:absolute;top:14px;left:14px;padding:9px 12px;border:1px solid #ffffff22;background:#07110dcc;backdrop-filter:blur(10px);border-radius:12px;font-weight:800;letter-spacing:.08em;font-size:11px}.quest{position:absolute;top:14px;right:14px;max-width:260px;padding:12px 14px;border:1px solid #ffffff22;background:#07110dcc;backdrop-filter:blur(10px);border-radius:14px}.quest b{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:#d9b86c;margin-bottom:4px}.quest span{font-size:13px;color:#e8eee9}.hint{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);padding:8px 13px;border-radius:999px;background:#07110dd9;border:1px solid #ffffff20;font-size:12px;color:#dfe8e1;white-space:nowrap}.dialogue{display:none;position:absolute;left:50%;bottom:20px;transform:translateX(-50%);width:min(720px,calc(100% - 28px));padding:18px;background:rgba(5,12,9,.94);border:1px solid #d9b86c55;border-radius:18px;box-shadow:0 18px 60px #0009;pointer-events:auto}.speaker{font-size:11px;text-transform:uppercase;letter-spacing:.14em;color:#d9b86c;font-weight:800;margin-bottom:6px}.line{font-size:17px;line-height:1.45;color:#f4f6f4}.choices{display:grid;gap:8px;margin-top:13px}.choice,.continue,.restart{border:1px solid #ffffff1e;background:#ffffff0d;color:#fff;border-radius:11px;padding:11px 13px;text-align:left;font:inherit;cursor:pointer}.choice:hover,.continue:hover,.restart:hover{background:#d9b86c;color:#08100b}.ending{display:none;position:absolute;inset:0;align-items:center;justify-content:center;background:linear-gradient(#06100bdd,#06100dee);pointer-events:auto}.ending-card{width:min(600px,calc(100% - 28px));padding:28px;border:1px solid #d9b86c66;border-radius:24px;background:#0b1711;box-shadow:0 30px 100px #000b;text-align:center}.ending-card h1{font-family:Georgia,serif;font-size:40px;margin:0 0 10px}.ending-card p{color:#d6dfd8;line-height:1.65}.ending-card .verse{margin:18px 0;padding:14px;border-left:3px solid #d9b86c;text-align:left;color:#eee8d7;font-family:Georgia,serif}.restart{display:inline-block;background:#d9b86c;color:#08100b;text-align:center;font-weight:800;margin-top:8px}.controls{position:absolute;left:18px;bottom:18px;display:grid;grid-template-columns:52px 52px 52px;grid-template-rows:52px 52px;gap:6px;pointer-events:auto}.ctrl{border:1px solid #ffffff24;background:#07110dcc;color:#fff;border-radius:14px;font-size:21px;touch-action:none}.up{grid-column:2}.left{grid-column:1;grid-row:2}.down{grid-column:2;grid-row:2}.right{grid-column:3;grid-row:2}.interact{position:absolute;right:18px;bottom:28px;width:82px;height:82px;border-radius:50%;border:1px solid #d9b86c66;background:#d9b86c;color:#08100b;font-weight:900;pointer-events:auto;box-shadow:0 8px 30px #0008}.start{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 35%,#193326,#050b08 70%);pointer-events:auto}.start-card{width:min(620px,calc(100% - 30px));text-align:center}.start-card .eyebrow{color:#d9b86c;font-size:11px;font-weight:800;letter-spacing:.2em;text-transform:uppercase}.start-card h1{font:56px Georgia,serif;margin:10px 0}.start-card p{color:#cbd6ce;line-height:1.6;max-width:520px;margin:0 auto 22px}.start-btn{border:0;border-radius:999px;background:#d9b86c;color:#08100b;padding:14px 24px;font-weight:900;font-size:15px;cursor:pointer}.small{font-size:11px;color:#849389;margin-top:13px}
+@media(max-width:600px){.start-card h1{font-size:42px}.line{font-size:15px}.quest{max-width:190px}.hint{bottom:112px}.controls{bottom:15px;left:12px}.interact{bottom:24px;right:14px;width:72px;height:72px}}
+</style>
+</head>
+<body>
+<div id="game"></div>
+<div class="hud">
+  <div class="brand">PROPERTY4NAIJA × STORY</div>
+  <div class="quest"><b>Current mission</b><span id="quest">Attend the evening service and speak with Pastor Grace.</span></div>
+  <div class="hint" id="hint">Move with WASD / arrows. Walk close to people and press E.</div>
+  <div class="controls" aria-label="Touch movement">
+    <button class="ctrl up" data-key="ArrowUp">▲</button><button class="ctrl left" data-key="ArrowLeft">◀</button><button class="ctrl down" data-key="ArrowDown">▼</button><button class="ctrl right" data-key="ArrowRight">▶</button>
+  </div>
+  <button class="interact" id="interact">TALK</button>
+  <div class="dialogue" id="dialogue"><div class="speaker" id="speaker"></div><div class="line" id="line"></div><div class="choices" id="choices"></div><button class="continue" id="continue">Continue</button></div>
+  <div class="ending" id="ending"><div class="ending-card"><div class="speaker">THE NARROW WAY</div><h1 id="endingTitle"></h1><p id="endingText"></p><div class="verse" id="endingVerse"></div><button class="restart" onclick="location.reload()">Play again</button></div></div>
+</div>
+<div class="start" id="start"><div class="start-card"><div class="eyebrow">A short Christian drama game</div><h1>The Narrow Way</h1><p>You are Daniel, a young Christian in Lagos facing a decision that could change his future. Walk through the neighbourhood, listen carefully, and choose what you will do when pressure arrives.</p><button class="start-btn" id="startBtn">Begin Story</button><div class="small">Best experienced in landscape on mobile.</div></div></div>
+<script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.185.0/build/three.module.js';
+
+const scene=new THREE.Scene();
+scene.background=new THREE.Color(0x7ca48a);scene.fog=new THREE.Fog(0x7ca48a,24,70);
+const camera=new THREE.PerspectiveCamera(58,innerWidth/innerHeight,.1,150);camera.position.set(0,8,10);
+const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,1.7));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;document.getElementById('game').appendChild(renderer.domElement);
+const hemi=new THREE.HemisphereLight(0xdff3e6,0x263b2d,2.1);scene.add(hemi);
+const sun=new THREE.DirectionalLight(0xffe7b0,3.2);sun.position.set(-15,25,12);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);scene.add(sun);
+
+const mat=(c)=>new THREE.MeshStandardMaterial({color:c,roughness:.85});
+function box(name,x,y,z,sx,sy,sz,c){const m=new THREE.Mesh(new THREE.BoxGeometry(sx,sy,sz),mat(c));m.name=name;m.position.set(x,y,z);m.castShadow=m.receiveShadow=true;scene.add(m);return m}
+function cyl(name,x,y,z,r,h,c){const m=new THREE.Mesh(new THREE.CylinderGeometry(r,r*.92,h,10),mat(c));m.name=name;m.position.set(x,y,z);m.castShadow=m.receiveShadow=true;scene.add(m);return m}
+function tree(x,z){cyl('tree',x,1,z,.24,2,0x65452d);const crown=new THREE.Mesh(new THREE.DodecahedronGeometry(1.15,0),mat(0x315b3e));crown.position.set(x,2.35,z);crown.castShadow=true;scene.add(crown)}
+
+// Ground and road
+box('ground',0,-.35,0,62,.5,62,0x355c3f);box('road',0,-.05,0,7,.12,58,0x5a6056);box('road2',0,-.04,0,58,.12,7,0x5a6056);
+for(let z=-25;z<=25;z+=5) box('lane',0,.03,z,.25,.02,2.2,0xd8cfa4);
+// Houses / church
+function house(x,z,c){box('house',x,1.6,z,6,3.2,5,c);const roof=box('roof',x,3.65,z,6.5,.45,5.5,0x4b3028);roof.rotation.z=.02;box('door',x,1,z-2.53,1.15,2,.18,0x2a201a);for(let i=-1;i<2;i++)box('window',x+i*1.7,1.7,z-2.56,.8,.8,.12,0x9ec7c4)}
+house(-10,-10,0xc79e72);house(10,-11,0x9baf93);house(-11,11,0xb58b72);house(11,10,0x8f9caa);
+box('church',0,2,15,12,4,7,0xe4ded0);box('churchRoof',0,4.45,15,13,.55,8,0x6c4634);box('churchDoor',0,1.2,11.43,1.8,2.4,.2,0x4d3027);cyl('cross',0,5.9,11.2,.18,2.2,0xd9b86c);box('crossbar',0,6.25,11.2,1.3,.18,.18,0xd9b86c);
+for(let x=-27;x<=27;x+=6){tree(x,-27);tree(x,27)}
+
+// Player and NPCs
+function person(name,x,z,shirt,skin=0x7b4b35){const g=new THREE.Group();g.name=name;g.position.set(x,0,z);const body=new THREE.Mesh(new THREE.CylinderGeometry(.42,.5,1.25,10),mat(shirt));body.position.y=1;body.castShadow=true;g.add(body);const head=new THREE.Mesh(new THREE.SphereGeometry(.36,12,8),mat(skin));head.position.y=1.9;head.castShadow=true;g.add(head);const legs=box('legs',0,.35,0,.65,.7,.45,0x252b2b);g.add(legs);scene.add(g);return g}
+const player=person('Daniel',0,7,0x294f78);player.scale.set(.9,.9,.9);
+const pastor=person('Pastor Grace',-3,12,0x6b3655);const kelechi=person('Kelechi',8,3,0x9c6b2f);const mama=person('Mama Ada',-8,3,0x32634b);
+
+// Story props
+const wallet=box('wallet',5,.18,1,.45,.12,.7,0x17120f);const gate=box('gate',14,1,2,.2,2,.2,0xd9b86c);
+const interactables=[{obj:pastor,id:'pastor'},{obj:kelechi,id:'kelechi'},{obj:mama,id:'mama'},{obj:wallet,id:'wallet'}];
+let step=0,near=null,dialogueOpen=false,chosen=null;const keys={};
+const quest=document.getElementById('quest'),hint=document.getElementById('hint'),dialogue=document.getElementById('dialogue'),speaker=document.getElementById('speaker'),line=document.getElementById('line'),choices=document.getElementById('choices'),cont=document.getElementById('continue');
+const story={
+ pastor:{speaker:'Pastor Grace',lines:["Daniel, before you leave, remember this: faith is not only what we say in church. It is what we choose when obedience costs us something.","There is an interview tomorrow. Some people may tell you to bend the truth to get ahead. Do not trade your character for an opportunity."]},
+ mama:{speaker:'Mama Ada',lines:["Young man, I saw you looking at that wallet. Somebody must be searching for it.","Doing the right thing when nobody is watching is still worship. Go and find its owner."]},
+ kelechi:{speaker:'Kelechi',lines:["Bro, that wallet? Keep it. Nobody saw you pick it up.","And tomorrow, just change one small detail on your application. Everybody does it. You need this job."]},
+ wallet:{speaker:'Daniel',lines:["A wallet. There is an ID inside. I could hand it to the police, look for the owner, or pretend I never found it."]}
+};
+function setQuest(t){quest.textContent=t}
+function openDialogue(id){dialogueOpen=true;dialogue.style.display='block';choices.innerHTML='';cont.style.display='block';let d=story[id];speaker.textContent=d.speaker;let i=0;line.textContent=d.lines[i];cont.onclick=()=>{i++;if(i<d.lines.length)line.textContent=d.lines[i];else finishDialogue(id)} }
+function finishDialogue(id){dialogue.style.display='none';dialogueOpen=false;if(id==='pastor'&&step===0){step=1;setQuest('Speak with Mama Ada near the crossroads.');}else if(id==='mama'&&step===1){step=2;setQuest('Find Kelechi and hear his advice.');}else if(id==='kelechi'&&step===2){step=3;setQuest('Make your choice at the crossroads. Find the wallet first.');}else if(id==='wallet'&&step===3){showChoices()}}
+function showChoices(){dialogueOpen=true;dialogue.style.display='block';speaker.textContent='THE CROSSROADS';line.textContent='Kelechi’s pressure is still in your mind. What will Daniel do with the wallet and the temptation to lie?';cont.style.display='none';choices.innerHTML='';[['Return the wallet and tell the truth',1],['Keep the wallet and lie on the application',2],['Avoid the decision and walk away',3]].forEach(([txt,v])=>{const b=document.createElement('button');b.className='choice';b.textContent=txt;b.onclick=()=>endGame(v);choices.appendChild(b)})}
+function endGame(v){dialogue.style.display='none';document.getElementById('ending').style.display='flex';const title=document.getElementById('endingTitle'),text=document.getElementById('endingText'),verse=document.getElementById('endingVerse');if(v===1){title.textContent='The Narrow Way';text.textContent='Daniel returns the wallet, tells the truth and walks into the interview without pretending to be someone else. The future is uncertain, but his character is intact. His small choice becomes the beginning of a larger testimony.';verse.textContent='“Whoever walks in integrity walks securely.” — Proverbs 10:9';}else if(v===2){title.textContent='A Costly Shortcut';text.textContent='Daniel takes what is not his and chooses a lie to protect his opportunity. He gets what he wanted for a moment, but peace disappears. The game reminds us that a shortcut can still take us farther from where we should be.';verse.textContent='“What good is it for someone to gain the whole world, yet forfeit their soul?” — Mark 8:36';}else{title.textContent='The Missed Moment';text.textContent='Daniel walks away. Nothing dramatic happens immediately, but the decision he avoided remains with him. Sometimes courage is not choosing between easy options; it is choosing what is right before the moment passes.';verse.textContent='“Let us not become weary in doing good.” — Galatians 6:9';}}
+
+function dist(a,b){return Math.hypot(a.position.x-b.position.x,a.position.z-b.position.z)}
+function updateNear(){near=null;let best=2.2;for(const item of interactables){const d=dist(player,item.obj);if(d<best){best=d;near=item.id}}if(near&&!dialogueOpen){hint.textContent='Press E or TALK to interact';}else if(!dialogueOpen){hint.textContent='Move with WASD / arrows. Walk close to people and press E.'}}
+function interact(){if(dialogueOpen)return;if(!near)return;if(near==='pastor'&&step===0)openDialogue('pastor');else if(near==='mama'&&step===1)openDialogue('mama');else if(near==='kelechi'&&step===2)openDialogue('kelechi');else if(near==='wallet'&&step>=3)openDialogue('wallet');}
+function move(dt){if(dialogueOpen)return;let x=0,z=0;if(keys.KeyA||keys.ArrowLeft)x--;if(keys.KeyD||keys.ArrowRight)x++;if(keys.KeyW||keys.ArrowUp)z--;if(keys.KeyS||keys.ArrowDown)z++;if(!x&&!z)return;const l=Math.hypot(x,z);x/=l;z/=l;const speed=5*dt;player.position.x+=x*speed;player.position.z+=z*speed;player.position.x=Math.max(-28,Math.min(28,player.position.x));player.position.z=Math.max(-28,Math.min(28,player.position.z));player.rotation.y=Math.atan2(x,z)}
+addEventListener('keydown',e=>{keys[e.code]=true;if(e.code==='KeyE')interact()});addEventListener('keyup',e=>keys[e.code]=false);
+for(const b of document.querySelectorAll('.ctrl')){const k=b.dataset.key;const on=e=>{e.preventDefault();keys[k]=true};const off=e=>{e.preventDefault();keys[k]=false};b.addEventListener('pointerdown',on);b.addEventListener('pointerup',off);b.addEventListener('pointercancel',off);b.addEventListener('pointerleave',off)}
+document.getElementById('interact').addEventListener('click',interact);
+
+function animate(t){const dt=Math.min(.04,(t-(animate.last||t))/1000);animate.last=t;move(dt);updateNear();const target=new THREE.Vector3(player.position.x,2.5,player.position.z+7);camera.position.lerp(new THREE.Vector3(player.position.x,7,player.position.z+10),.08);camera.lookAt(target);renderer.render(scene,camera);requestAnimationFrame(animate)}
+addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
+document.getElementById('startBtn').onclick=()=>{document.getElementById('start').style.display='none';setQuest('Attend the evening service and speak with Pastor Grace.');requestAnimationFrame(animate)};
+</script>
+</body>
+</html>

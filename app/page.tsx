@@ -22,8 +22,9 @@ export default function Home() {
             <a href="#services">Services</a>
             <a href="#about">About</a>
             <a href="#contact">Contact</a>
+            <a href="/christian-story/">Story Game</a>
           </nav>
-          <a className="nav-cta" href="#contact">Talk to an Agent</a>
+          <a className="nav-cta" href="/christian-story/">Play Story</a>
         </div>
       </header>
 
